@@ -1,0 +1,21 @@
+{
+  "project": "Film and Television Index",
+  "version": "1.1.0",
+  "date": "2026-10-20",
+  "unit_tests": {
+    "passed": 9,
+    "skipped": 0
+  },
+  "navigation": "passed; 3 sections and 17 retained page entries",
+  "template_syntax": {
+    "passed": 47
+  },
+  "python_compile": "passed",
+  "browser_preview": "Actual login template visually checked, desktop and 390px mobile; mobile scrollWidth=innerWidth=390. Backend NAS actions not exercised.",
+  "docker_build": "not run; Docker engine not installed",
+  "container_startup": "not run",
+  "nas_media_operations": "not run",
+  "github_upload": false,
+  "public_image_published": false,
+  "glass_theme": "Shared stylesheet on navigation and login; reduced motion and dark theme selectors included; JavaScript syntax check passed."
+}
