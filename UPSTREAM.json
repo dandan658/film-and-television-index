@@ -8,6 +8,6 @@
   "license": "AGPL-3.0",
   "runtime_image": "19970688/nastools-bt@sha256:ddddf9438000e43545e7b85cbed0f73fdcf26ef49dc0ac47ee98a38398a265a9",
   "platform": "linux/amd64",
-  "publication": "local files only",
+  "publication": "public GitHub source and GHCR image",
   "distribution": "GitHub source and GitHub Actions-built GHCR image"
 }

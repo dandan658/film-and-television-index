@@ -14,7 +14,7 @@
 
 索引器、下载器、豆瓣的设置和底层客户端保留，保证媒体识别、下载完成文件整理、字幕等功能的依赖兼容；这不等于恢复资源搜索、订阅和下载管理。默认进入有权限的第一个保留页面，管理员默认进入文件管理。
 
-## 飞牛 Compose 安装
+## 飞牛本地构建（可选）
 
 1. 将整个 ZIP 解压到飞牛的一个**新目录**，例如 `docker/film-and-television-index`。目录中必须同时存在 `compose.yaml`、`Dockerfile`、`app`、`web` 等文件，不能只上传 YAML。
 2. 复制 `.env.example` 为 `.env`，将 `MEDIA_ROOT` 改为实际媒体父目录。例如 `MEDIA_ROOT=/vol1/1000/media`。也可以直接在 `compose.yaml` 中把 `${MEDIA_ROOT:-./media}:/media` 改为 `/你的真实媒体父目录:/media`。
@@ -31,7 +31,7 @@ docker compose up -d
 docker compose logs --tail=100 film-and-television-index
 ```
 
-首次构建会拉取所指定的 `19970688/nastools-bt` 固定镜像，之后在本地生成 `film-and-television-index:local`。**该镜像没有发布，不能直接 docker pull 项目名称。** 所指定基础镜像实际为 `linux/amd64`，本项目据此面向 x86-64 飞牛 NAS。
+首次构建会拉取所指定的 `19970688/nastools-bt` 固定镜像，之后在本地生成 `film-and-television-index:local`。此处为本地构建方式；直接拉取已发布镜像请使用下方的 `compose.nas.yaml`。 所指定基础镜像实际为 `linux/amd64`，本项目据此面向 x86-64 飞牛 NAS。
 
 ## 数据与更新
 
@@ -44,7 +44,7 @@ docker compose logs --tail=100 film-and-television-index
 
 已通过 Python 源码编译、9 项本地测试以及实际导航配置的 JavaScript 检查：保留全部 17 个页面入口，移除其他导航，禁用对应 URL 和命令，保留整理调度且不改写配置。测试使用临时样例，不连接 NAS 或真实网盘。
 
-当前制作环境没有 Docker 引擎，**尚未进行完整镜像构建、容器启动或真实媒体整理验证**。请在飞牛构建后检查日志；这份交付是可本地构建的源码项目，不是已验证启动的镜像文件。
+GitHub Actions 已通过真实 linux/amd64 镜像构建、容器启动、默认账号登录、全部 17 个保留页面 HTTP 检查和源码包下载校验。真实 NAS 文件整理、目录监控以及第三方服务连接仍需在你的环境验证。
 
 本地测试：
 
@@ -63,7 +63,7 @@ node scripts/check_navigation.cjs
 
 保留媒体整理与设置页面的原版模板、表单字段、弹窗、提交事件和后台接口。共享样式覆盖登录、导航、表格、表单、弹窗、通知和深浅色主题；窄屏表格横向滚动，弹窗内容独立滚动。保留减少动态效果系统偏好。模糊仅用于导航和浮层，列表行不使用模糊，避免大量记录重复合成。
 
-这次修改是界面换肤，不新增云盘或文件处理引擎。原版功能仍需要有效的 TMDB、NAS 路径和客户端配置。当前环境没有 Docker，未验证真实 NAS 转移、同步和第三方服务连接。
+这次修改是界面换肤，不新增云盘或文件处理引擎。原版功能仍需要有效的 TMDB、NAS 路径和客户端配置。真实 NAS 转移、同步和第三方服务连接尚未验证。
 
 ## 直接拉取部署
 
