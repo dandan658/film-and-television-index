@@ -40,8 +40,6 @@ class Scheduler:
 
     def run_service(self):
         self.SCHEDULER = BackgroundScheduler(timezone=Config().get_timezone(), executors={'default': ThreadPoolExecutor(8)})
-        if self._pt and self._pt.get('pt_monitor'):
-            self.SCHEDULER.add_job(Downloader().transfer, 'interval', seconds=PT_TRANSFER_INTERVAL)
         if self._media and self._media.get('mediasync_interval'):
             try:
                 hours = float(self._media['mediasync_interval'])
@@ -51,7 +49,6 @@ class Scheduler:
         self.SCHEDULER.add_job(MetaHelper().save_meta_data, 'interval', seconds=METAINFO_SAVE_INTERVAL)
         self.SCHEDULER.add_job(Sync().transfer_mon_files, 'interval', seconds=SYNC_TRANSFER_INTERVAL)
         self.SCHEDULER.add_job(MetaHelper().delete_unknown_meta, 'interval', hours=META_DELETE_UNKNOWN_INTERVAL)
-        self.SCHEDULER.add_job(get_login_wallpaper, 'interval', hours=REFRESH_WALLPAPER_INTERVAL)
         self.SCHEDULER.start()
 
     def stop_service(self):

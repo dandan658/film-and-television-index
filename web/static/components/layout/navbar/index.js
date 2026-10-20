@@ -133,17 +133,7 @@ const navbar_list = [
           </svg>
         `,
       },
-      {
-        name: "过滤规则",
-        page: "filterrule",
-        icon: html`
-          <!-- https://tabler-icons.io/static/tabler-icons/icons-png/filter.png -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-filter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M5.5 5h13a1 1 0 0 1 .5 1.5l-5 5.5l0 7l-4 -3l0 -4l-5 -5.5a1 1 0 0 1 .5 -1.5"></path>
-          </svg>
-        `,
-      },
+
       {
         name: "自定义识别词",
         page: "customwords",
@@ -157,34 +147,8 @@ const navbar_list = [
           </svg>
         `,
       },
-      {
-        name: "索引器",
-        page: "indexer",
-        icon: html`
-          <!-- https://tabler-icons.io/static/tabler-icons/icons-png/list-search.png -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M15 15m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-            <path d="M18.5 18.5l2.5 2.5"></path>
-            <path d="M4 6h16"></path>
-            <path d="M4 12h4"></path>
-            <path d="M4 18h4"></path>
-          </svg>
-        `,
-      },
-      {
-        name: "下载器",
-        page: "downloader",
-        icon: html`
-          <!-- https://tabler-icons.io/static/tabler-icons/icons-png/download.png -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-            <path d="M7 11l5 5l5 -5"></path>
-            <path d="M12 4l0 12"></path>
-          </svg>
-        `,
-      },
+
+
       {
         name: "媒体服务器",
         page: "mediaserver",
@@ -219,21 +183,7 @@ const navbar_list = [
           </svg>
         `,
       },
-      {
-        name: "豆瓣",
-        page: "douban",
-        icon: html`
-          <!-- https://tabler-icons.io/static/tabler-icons/icons-png/brand-douban.png -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-douban" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M4 20h16"></path>
-            <path d="M5 4h14"></path>
-            <path d="M8 8h8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z"></path>
-            <path d="M16 14l-2 6"></path>
-            <path d="M8 17l1 3"></path>
-          </svg>
-        `,
-      },
+
     ],
   },
 ];
@@ -430,7 +380,7 @@ export class LayoutNavbar extends CustomElement {
           <div class="d-flex flex-row flex-grow-1 lit-navbar-hide-scrollbar">
             <div class="d-flex flex-column flex-grow-1">
               <h1 class="mt-3" style="text-align:center;">
-                <div style="font-size:15px;font-weight:700;line-height:1.5;padding:0 12px">Film and Television<br>Index</div>
+                <div class="fti-brand"><img src="/static/img/film-index-logo.svg" alt="" width="40" height="40"><span>Film &amp; Television<small>INDEX</small></span></div>
               </h1>
               <div class="accordion px-2 py-2 flex-grow-1">
                 ${navbar_list.map((item, index) => ( html`
@@ -451,7 +401,7 @@ export class LayoutNavbar extends CustomElement {
               </div>
               <div class="d-flex align-items-end">
                 <span class="d-flex flex-grow-1 justify-content-center border rounded-3 m-3 p-2 ${this._is_update ? "bg-yellow" : ""}">
-                  <a href=${this._update_url} class="${this._is_update ? "text-yellow-fg" : "text-muted"}" target="_blank" rel="noreferrer">
+                  <span class="text-muted fti-version">
                     <strong>
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24"
                           viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
@@ -459,9 +409,9 @@ export class LayoutNavbar extends CustomElement {
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
                       </svg>
-                      ${!this._is_update ? this.layout_appversion : html`<del>${this.layout_appversion}</del>`}<span style="display:block;font-size:10px;font-weight:400">源码 · AGPL-3.0</span>
+                      ${!this._is_update ? this.layout_appversion : html`<del>${this.layout_appversion}</del>`}
                     </strong>
-                  </a>
+                  </span>
                   ${this._is_update
                   ? html`
                     <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer icon icon-tabler icon-tabler-arrow-big-up-lines-filled ms-2 text-red" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"

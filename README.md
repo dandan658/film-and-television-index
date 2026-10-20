@@ -1,70 +1,43 @@
 # Film and Television Index · 液态玻璃版
 
-基于 NAStools v2.9.1 的独立媒体整理版，修改日期：2026-10-20。源码仓库：https://github.com/dandan658/film-and-television-index 。镜像由 GitHub Actions 构建，通过容器启动及登录检查后发布至 GHCR。
+纯媒体整理工具，基于 NAStools v2.9.1。源码：https://github.com/dandan658/film-and-television-index
 
 ## 保留功能
 
-| 板块 | 内容 |
-| --- | --- |
-| 媒体整理 | 文件管理、手动识别、历史记录、TMDB 缓存 |
-| 服务 | 下载完成文件整理、目录同步、整理缓存清理、名称识别测试、规则测试、网络测试、备份恢复 |
-| 设置 | 基础设置、用户管理、媒体库、目录同步、消息通知、过滤规则、自定义识别词、索引器、下载器、媒体服务器、字幕、豆瓣 |
+- 媒体整理：文件管理、手动识别、历史记录、TMDB 缓存。
+- 服务：目录同步、清理整理缓存、名称识别测试、网络测试、备份恢复。
+- 设置：基础设置、用户管理、媒体库、目录同步、消息通知、自定义识别词、媒体服务器、字幕。
 
-移除探索、资源搜索、站点管理、订阅管理、下载管理的导航和页面入口；顶部资源搜索入口也已移除。对应旧 URL、获取资源的操作命令和 API 分组被禁用。站点签到、站点统计刷新、RSS 订阅、订阅搜索、刷流、自动删种及豆瓣自动触发订阅不再启动。
+已下架所有 PT 获取和做种功能：站点、探索、资源搜索、索引器、下载器、下载设置、订阅、豆瓣订阅、刷流、删种、种子上传、下载过滤规则及其 API、操作命令和定时任务。旧配置中的 PT 开关不会重新启用这些功能。消息通知只保留媒体整理及媒体服务器事件。底层文件整理仍复用上游公共模块，因此代码中的历史配置键 `pt.rmt_mode` 表示文件整理方式，保留以兼容原配置。
 
-索引器、下载器、豆瓣的设置和底层客户端保留，保证媒体识别、下载完成文件整理、字幕等功能的依赖兼容；这不等于恢复资源搜索、订阅和下载管理。默认进入有权限的第一个保留页面，管理员默认进入文件管理。
+## NAS 直接拉取
 
-## 飞牛本地构建（可选）
+适用 x86-64 NAS，镜像：`ghcr.io/dandan658/film-and-television-index:latest`。
 
-1. 将整个 ZIP 解压到飞牛的一个**新目录**，例如 `docker/film-and-television-index`。目录中必须同时存在 `compose.yaml`、`Dockerfile`、`app`、`web` 等文件，不能只上传 YAML。
-2. 复制 `.env.example` 为 `.env`，将 `MEDIA_ROOT` 改为实际媒体父目录。例如 `MEDIA_ROOT=/vol1/1000/media`。也可以直接在 `compose.yaml` 中把 `${MEDIA_ROOT:-./media}:/media` 改为 `/你的真实媒体父目录:/media`。
-3. 建议一次映射同时包含待整理文件和媒体库的共同父目录，避免硬链接跨挂载失败。容器内用 `/media/待整理` 和 `/media/影视库` 等路径配置目录同步和媒体库。
-4. 飞牛 Docker → Compose → 新建项目，项目名称填 `film-and-television-index`，路径选上述解压目录，选择该目录中的 `compose.yaml`，执行构建。
-5. 打开 `http://飞牛IP:18510`。全新配置的默认账号为 `admin`，默认密码为 `password`；登录后在基础设置中修改。
-6. 配置 TMDB、媒体库、目录同步和媒体服务器。默认映射 `./media` 是新建的空目录，只有把 `MEDIA_ROOT` 改为真实路径后才能看到 NAS 媒体。
+1. 下载 `compose.nas.yaml`，在飞牛 Docker / Compose 中新建独立项目。
+2. 将 `${MEDIA_ROOT:-./media}:/media` 中的宿主目录改为真实媒体父目录；应用内统一使用 `/media` 路径。
+3. 启动后访问 `http://NAS的IP:18510`。全新配置账号 `admin`，密码 `password`。
+4. 设置 TMDB、媒体库和目录同步。把待整理目录和媒体库的共同父目录映射为 `/media`，有利于硬链接正常工作。
 
-终端部署命令（在项目目录运行）：
+更新时拉取最新镜像并重建，保留已有配置目录映射：
 
 ```sh
-docker compose build
-docker compose up -d
-docker compose logs --tail=100 film-and-television-index
+docker compose -f compose.nas.yaml pull
+docker compose -f compose.nas.yaml up -d
 ```
 
-首次构建会拉取所指定的 `19970688/nastools-bt` 固定镜像，之后在本地生成 `film-and-television-index:local`。此处为本地构建方式；直接拉取已发布镜像请使用下方的 `compose.nas.yaml`。 所指定基础镜像实际为 `linux/amd64`，本项目据此面向 x86-64 飞牛 NAS。
+`pull_policy: always` 只在部署/重建时检查更新。不要改变现有配置映射；`./config` 与 `./data/config` 是不同目录，必须沿用部署时的路径。不要把同一配置目录同时挂载给两个运行中的实例。旧账号、媒体配置、整理历史沿用上游格式，不主动删除。底层自动升级已关闭，避免覆盖定制版本。
 
-## 数据与更新
+## v1.2.0 界面与性能
 
-- 数据持久化到本项目 `./data/config`，与原 NAStools、百度自动转存项目分开；端口使用 18510。
-- 默认使用新配置，不要将旧容器的数据目录同时挂载给两个运行中的实例。需要迁移时，先停止旧实例并复制其配置到新目录。
-- 底层识别、整理、字幕、媒体服务器代码保留；配置文件及数据库格式沿用 2.9.1，没有主动删除旧任务或历史数据。旧的获取资源任务即使存在，也不会在这个版本自动运行。
-- 容器入口强制关闭上游自动更新，避免上游覆盖精简修改。更新本地源码后执行 `docker compose up -d --build`。
+独立门户浮层修复目录菜单层级遮挡，目录读取异步显示状态，8 秒缓存和手动刷新减少重复扫描；后端使用 `os.scandir` 减少逐文件属性查询。超时后可重试或手动输入完整路径。大目录每次最多渲染 200 项，可搜索其余条目。原生单选下拉框统一玻璃菜单，保留原字段值和 change 事件。取消嵌套全屏模糊，并移除已下架功能的大型图表和日历脚本。使用原创 SVG 影视 Logo，左下角仅显示版本。
 
-## 验证范围
+## 本地构建与验证
 
-已通过 Python 源码编译、9 项本地测试以及实际导航配置的 JavaScript 检查：保留全部 17 个页面入口，移除其他导航，禁用对应 URL 和命令，保留整理调度且不改写配置。测试使用临时样例，不连接 NAS 或真实网盘。
+完整源码目录中执行 `docker compose build && docker compose up -d`。`compose.yaml` 用于本地构建，`compose.nas.yaml` 用于直接拉取。
 
-GitHub Actions 已通过真实 linux/amd64 镜像构建、容器启动、默认账号登录、全部 17 个保留页面 HTTP 检查和源码包下载校验。真实 NAS 文件整理、目录监控以及第三方服务连接仍需在你的环境验证。
-
-本地测试：
-
-```sh
-python -m unittest discover -s tests -p test_media_profile.py -v
-node scripts/check_navigation.cjs
-```
+GitHub Actions 执行 13 项测试、导航和脚本语法检查，然后构建 amd64 镜像，验证容器启动、默认账号登录、全部 13 个保留页面和源码包下载，通过后发布 latest。真实 NAS 目录同步、整理、第三方服务连接及挂载性能仍需在你的环境验证。
 
 ## 源码与许可
 
-上游为 [NAStools v2.9.1 源码存档](https://github.com/NewBeesX/nas-tools-v2.9.1/tree/e3a43d4f0896db49de02e9a9201ef2e5877af56f)，基础镜像为 [19970688/nastools-bt](https://hub.docker.com/r/19970688/nastools-bt)。版本和摘要记录在 `UPSTREAM.json`。原项目说明见 `README_UPSTREAM.md`，原版权及 AGPL-3.0 许可保留在 `LICENSE.md`。
-
-本修改版本继续以 AGPL-3.0 提供，无担保。构建时生成仅包含项目源文件的源码包，运行界面底部版本链接可下载 `/project-source.zip`；不会打包挂载的配置、媒体或 `.env`。运行依赖复用固定基础镜像，第三方子模块引用见 `.gitmodules` 与 `THIRD_PARTY.lock.json`。
-
-## 液态玻璃界面（v1.1.0）
-
-保留媒体整理与设置页面的原版模板、表单字段、弹窗、提交事件和后台接口。共享样式覆盖登录、导航、表格、表单、弹窗、通知和深浅色主题；窄屏表格横向滚动，弹窗内容独立滚动。保留减少动态效果系统偏好。模糊仅用于导航和浮层，列表行不使用模糊，避免大量记录重复合成。
-
-这次修改是界面换肤，不新增云盘或文件处理引擎。原版功能仍需要有效的 TMDB、NAS 路径和客户端配置。真实 NAS 转移、同步和第三方服务连接尚未验证。
-
-## 直接拉取部署
-
-NAS 使用 `compose.nas.yaml`，镜像为 `ghcr.io/dandan658/film-and-television-index:latest`，适用 x86-64 NAS。将媒体父目录映射改为实际路径，配置目录 `./data/config` 更新时保留。端口为 `18510`。`pull_policy: always` 会在部署/重建时检查最新镜像，运行中的容器不会自行更新。也可 `docker compose -f compose.nas.yaml pull && docker compose -f compose.nas.yaml up -d`。本地构建仍使用 `compose.yaml`。
+原版权与 AGPL-3.0 许可保留于 `LICENSE.md`，本修改版沿用此许可。固定基础镜像和上游提交见 `UPSTREAM.json`，第三方依赖引用见 `THIRD_PARTY.lock.json`。源码公开于本仓库，运行界面账户菜单也提供 `/project-source.zip` 下载；不包含挂载配置、媒体及 `.env`。原项目说明见 `README_UPSTREAM.md`。

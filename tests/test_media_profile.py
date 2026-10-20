@@ -24,12 +24,12 @@ class ProfileTests(unittest.TestCase):
         for name in REMOVED_ACTIONS:
             self.assertFalse(action_allowed(name, {}), name)
         for name in ('rename', 'rename_udf', 're_identification', 'name_test', 'search_media_infos', 'get_users',
-                     'add_downloader', 'get_indexers', 'download_subtitle', 'modify_tmdb_cache', 'run_directory_sync',
-                     'add_filterrule', 'update_message_client', 'get_douban_history', 'test_connection', 'update_config'):
+                     'download_subtitle', 'modify_tmdb_cache', 'run_directory_sync',
+                     'update_message_client', 'test_connection', 'update_config'):
             self.assertTrue(action_allowed(name, {}), name)
         self.assertTrue(action_allowed('sch', {'item': 'sync'}))
-        self.assertTrue(action_allowed('sch', {'item': 'pttransfer'}))
-        for item in ('rssdownload', 'ptsignin', 'autoremovetorrents', 'subscribe_search_all', 'douban'):
+        self.assertFalse(action_allowed('sch', {'item': 'pttransfer'}))
+        for item in ('rssdownload', 'ptsignin', 'autoremovetorrents', 'subscribe_search_all'):
             self.assertFalse(action_allowed('sch', {'item': item}))
 
     def test_permissions_and_landing_do_not_rewrite_input(self):
@@ -44,7 +44,7 @@ class ProfileTests(unittest.TestCase):
     def test_retained_real_page_handlers_keep_login_protection(self):
         tree = ast.parse((ROOT / 'web/main.py').read_text(encoding='utf8'))
         pages = {'mediafile', 'unidentification', 'history', 'tmdbcache', 'service', 'basic', 'users', 'library',
-                 'directorysync', 'notification', 'filterrule', 'customwords', 'indexer', 'downloader', 'mediaserver', 'subtitle', 'douban'}
+                 'directorysync', 'notification', 'customwords', 'mediaserver', 'subtitle'}
         checked = set()
         for node in tree.body:
             if not isinstance(node, ast.FunctionDef): continue
@@ -78,7 +78,7 @@ class ProfileTests(unittest.TestCase):
         instance._douban = {'interval': 1}; instance._media = {'mediasync_interval': 1}
         before = copy.deepcopy(instance.__dict__)
         scope['run_service'](instance)
-        self.assertEqual(jobs, ['transfer', 'sync_mediaserver', 'save_meta_data', 'transfer_mon_files', 'delete_unknown_meta', '<lambda>'])
+        self.assertEqual(jobs, ['sync_mediaserver', 'save_meta_data', 'transfer_mon_files', 'delete_unknown_meta'])
         self.assertEqual(instance._pt, before['_pt'])
         self.assertEqual(instance._douban, before['_douban'])
 
@@ -110,7 +110,7 @@ class RequestTests(unittest.TestCase):
         app = Flask(__name__); install(app)
         app.add_url_rule('/do', 'fixture_action', lambda: {'success': True}, methods=['POST'])
         for index, page in enumerate(('mediafile', 'unidentification', 'history', 'tmdbcache', 'service', 'basic', 'users', 'library',
-                                     'directorysync', 'notification', 'filterrule', 'customwords', 'indexer', 'downloader', 'mediaserver', 'subtitle', 'douban')):
+                                     'directorysync', 'notification', 'customwords', 'mediaserver', 'subtitle')):
             app.add_url_rule('/' + page, 'page' + str(index), lambda: 'retained')
         self.client = app.test_client()
 
@@ -122,7 +122,7 @@ class RequestTests(unittest.TestCase):
 
     def test_all_requested_pages_still_pass_guard(self):
         for page in ('mediafile', 'unidentification', 'history', 'tmdbcache', 'service', 'basic', 'users', 'library',
-                     'directorysync', 'notification', 'filterrule', 'customwords', 'indexer', 'downloader', 'mediaserver', 'subtitle', 'douban'):
+                     'directorysync', 'notification', 'customwords', 'mediaserver', 'subtitle'):
             self.assertEqual(self.client.get('/' + page).status_code, 200, page)
 
     def test_removed_commands_and_bad_input_blocked(self):

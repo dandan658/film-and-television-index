@@ -1,25 +1,22 @@
 {
   "project": "Film and Television Index",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "date": "2026-10-20",
   "unit_tests": {
-    "passed": 9,
+    "passed": 13,
     "skipped": 0
   },
-  "navigation": "passed; 3 sections and 17 retained page entries",
+  "navigation": "13 media-only pages; all PT pages and APIs unavailable",
   "template_syntax": {
     "passed": 47
   },
   "python_compile": "passed",
   "browser_preview": "Actual login template visually checked, desktop and 390px mobile; mobile scrollWidth=innerWidth=390. Backend NAS actions not exercised.",
   "docker_build": "passed in GitHub Actions; linux/amd64",
-  "container_startup": "passed; default admin login and all 17 retained pages HTTP 200",
+  "container_startup": "pending v1.2.0 GitHub Actions smoke test",
   "nas_media_operations": "not run",
   "github_upload": true,
-  "public_image_published": true,
+  "public_image_published": false,
   "glass_theme": "Shared stylesheet on navigation and login; reduced motion and dark theme selectors included; JavaScript syntax check passed.",
-  "anonymous_pull_access": true,
-  "image_digest": "sha256:dab687ed0f3088204eda41e01ee6a7e75b3ce38bb7d9e973440828ff26346c21",
-  "tested_commit": "7c85d649ab31ac234cb2b8881911595249577d82",
-  "workflow": "https://github.com/dandan658/film-and-television-index/actions/runs/39365669019"
+  "anonymous_pull_access": true
 }

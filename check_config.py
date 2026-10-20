@@ -129,55 +129,7 @@ def check_config():
     else:
         print("配置文件格式错误，找不到media配置项！")
 
-    # 检查站点配置
-    if Config().get_config('pt'):
-        pt_client = Config().get_config('pt').get('pt_client')
-        print("下载软件设置为：%s" % pt_client)
-
-        rmt_mode = Config().get_config('pt').get('rmt_mode', 'copy')
-        if rmt_mode == "link":
-            print("默认文件转移模式为：硬链接")
-        elif rmt_mode == "softlink":
-            print("默认文件转移模式为：软链接")
-        elif rmt_mode == "move":
-            print("默认文件转移模式为：移动")
-        elif rmt_mode == "rclone":
-            print("默认文件转移模式为：rclone移动")
-        elif rmt_mode == "rclonecopy":
-            print("默认文件转移模式为：rclone复制")
-        else:
-            print("默认文件转移模式为：复制")
-
-        search_indexer = Config().get_config('pt').get('search_indexer')
-        if search_indexer:
-            print("索引器设置为：%s" % search_indexer)
-
-        search_auto = Config().get_config('pt').get('search_auto')
-        if search_auto:
-            print("微信等移动端渠道搜索已开启自动择优下载")
-
-        ptsignin_cron = Config().get_config('pt').get('ptsignin_cron')
-        if not ptsignin_cron:
-            print("站点自动签到时间未配置，站点签到功能已关闭")
-
-        pt_check_interval = Config().get_config('pt').get('pt_check_interval')
-        if not pt_check_interval:
-            print("RSS订阅周期未配置，RSS订阅功能已关闭")
-
-        pt_monitor = Config().get_config('pt').get('pt_monitor')
-        if not pt_monitor:
-            print("下载软件监控未开启，下载器监控功能已关闭")
-    else:
-        print("配置文件格式错误，找不到pt配置项！")
-
-    # 检查Douban配置
-    if not Config().get_config('douban'):
-        print("豆瓣未配置")
-    else:
-        if not Config().get_config('douban').get('users') \
-                or not Config().get_config('douban').get('types') \
-                or not Config().get_config('douban').get('days'):
-            print("豆瓣配置不完整")
+    print('Film Index：仅启用媒体整理与目录同步，PT 服务已下架')
 
 
 def update_config():

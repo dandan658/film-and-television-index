@@ -27,7 +27,7 @@
       }
   {% endfor %}
   </style>
-  <link href="../static/css/liquid-glass.css?v=1.1.0" rel="stylesheet"/>
+  <link href="../static/css/liquid-glass.css?v=1.2.0" rel="stylesheet"/>
 </head>
 <body class="layout-fluid">
 <div class="page">
@@ -332,174 +332,7 @@
   </div>
 </div>
 <!-- 手动订阅 -->
-<div class="modal modal-blur fade" id="modal-manual-rss" tabindex="-1" role="dialog" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="rss_modal_title">新增订阅</h5>
-        <input type="hidden" id="rss_id">
-        <input type="hidden" id="rss_type">
-        <input type="hidden" id="rss_tmdbid">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="mb-3">
-              <label class="form-label required">标题</label>
-              <input type="text" value="" id="rss_name" class="form-control" placeholder="标题">
-            </div>
-          </div>
-          <div class="col-lg-2">
-            <div class="mb-3">
-              <label class="form-label required">年份</label>
-              <input type="text" value="" id="rss_year" class="form-control" placeholder="年份">
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">自定义搜索词</label>
-              <input type="text" value="" id="rss_keyword" class="form-control" placeholder="留空使用TMDB数据">
-            </div>
-          </div>
-        </div>
-        <div class="row" id="rss_tv_season_div">
-          <div class="col-lg-4">
-            <div class="mb-3">
-              <label class="form-label required">季</label>
-              <select class="form-select" id="rss_season">
-                <option value="" selected>请选择</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">总集数 <span class="form-help"
-                                                     title="可留空应用TMDB剧集信息"
-                                                     data-bs-toggle="tooltip">?</span></label>
-              <input type="text" value="" id="rss_total_ep" class="form-control" placeholder="总集数">
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">开始订阅集数</label>
-              <input type="text" value="" id="rss_current_ep" class="form-control" placeholder="开始订阅集数">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-4">
-            <div class="mb-3">
-              <label class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="fuzzy_match"
-                       onclick="change_match_check(this)">
-                <span class="form-check-label">模糊匹配 <span class="form-help"
-                                                              title="开启后不检查TMDB是否有媒体信息，只要种子名称、标题、年份任一匹配关键字即会下载，此时标题可以配置正则表达式实现模糊匹配"
-                                                              data-bs-toggle="tooltip">?</span></span>
-              </label>
-            </div>
-          </div>
-          <div class="col-xl-4">
-            <div class="mb-3">
-              <label class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="over_edition"
-                       onclick="change_over_edition_check(this)">
-                <span class="form-check-label">洗版 <span class="form-help"
-                                                          title="开启洗版后不会检查本地是否已存在，满足订阅条件即会下载；除非匹配了对应的过滤规则中最高优先级的那条规则否则不会删除订阅（未明确过滤规则时使用默认规则），同一优先级的资源只下载一次；多个资源下载后如命名一致，则只会保留文件体积较大的，如需都保留则需要在文件重命名规则中增加相关要素以做区分"
-                                                          data-bs-toggle="tooltip">?</span></span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-3">
-            <div class="mb-3">
-              <label class="form-label">质量</label>
-              <select class="form-select" id="rss_restype">
-                <option value="" selected>全部</option>
-                {% for Restype in RestypeDict %}
-                  <option value="{{ Restype }}">{{ Restype }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <div class="mb-3">
-              <label class="form-label">分辨率</label>
-              <select class="form-select" id="rss_pix">
-                <option value="" selected>全部</option>
-                {% for Pix in PixDict %}
-                  <option value="{{ Pix }}">{{ Pix }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <div class="mb-3">
-              <label class="form-label">制作组/字幕组</label>
-              <input type="text" value="" id="rss_team" class="form-control" placeholder="支持正则表达式">
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <div class="mb-3">
-              <label class="form-label">过滤规则 <span class="form-help"
-                                                       title="质量、分辨率与过滤规则为“与”的关系，过滤规则不选择时将使用站点的过滤规则，站点也未设置过滤规则时将使用默认过滤规则"
-                                                       data-bs-toggle="tooltip">?</span></label>
-              <select class="form-select" id="rss_rule">
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">下载设置</label>
-              <select class="form-select" id="rss_download_setting"
-                      onchange="refresh_savepath_select('rss_save_path', true, $(this).val())">
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-8">
-            <div class="mb-3">
-              <label class="form-label">保存路径</label>
-              <select class="form-select" id="rss_save_path" aria-label="保存目录">
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row rss_sites_container" id="rss_sites_div">
-          <div class="mb-3">
-            <div class="btn-list">
-              <label class="form-label">订阅站点</label>
-              <a href="javascript:void(0)" class="ms-auto" onclick="select_btn_SelectALL(this, 'rss_sites')">全选</a>
-            </div>
-            <div class="form-selectgroup" id="rss_sites_group"></div>
-          </div>
-        </div>
-        <div class="row rss_sites_container" id="rss_search_sites_div">
-          <div class="mb-3">
-            <div class="btn-list">
-              <label class="form-label">搜索站点</label>
-              <a href="javascript:void(0)" class="ms-auto" onclick="select_btn_SelectALL(this, 'search_sites')">全选</a>
-            </div>
-            <div class="form-selectgroup" id="rss_search_sites_group"></div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a href="#" class="btn btn-link text-red me-auto" id="rss_delete_btn">
-          取消订阅
-        </a>
-        <div class="btn-list">
-          <a href="javascript:add_rss_manual(true)" name="rss_add_btn" class="btn btn-secondary">添加并继续</a>
-          <a href="javascript:add_rss_manual(false)" name="rss_add_btn" class="btn btn-primary">添加</a>
-          <a href="javascript:add_rss_manual(false)" name="rss_edit_btn" class="btn btn-primary">确定</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
 <!-- 手动识别 -->
 <div class="modal modal-blur fade" id="modal-media-identification" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
@@ -669,49 +502,7 @@
   </div>
 </div>
 <!-- 手动下载 -->
-<div class="modal modal-blur fade" id="modal-search-download" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-    <input type="hidden" id="search_download_id">
-    <input type="hidden" id="search_download_name">
-    <div class="modal-content">
-      <div class="modal-body">
-        <div class="modal-title">添加下载</div>
-        <div class="row mt-3">
-          <div class="col-md">
-            <div class="form-floating mb-1">
-              <select class="form-select" id="search_download_setting" aria-label="下载设置"
-                  onchange="refresh_savepath_select('search_download_dir', true, $(this).val())">
-              </select>
-              <label for="floatingSelect">下载设置</label>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="form-floating mb-1">
-              <select class="form-select" id="search_download_dir" aria-label="保存目录"></select>
-              <label for="floatingSelect">保存目录</label>
-            </div>
-          </div>
-        </div>
-        <form class="dropzone mt-2" id="torrent_files" action="/upload">
-          <div class="fallback">
-            <input name="file" type="file" accept="*.zip" />
-          </div>
-          <div class="dz-message">
-            <h3 class="dropzone-msg-title">上传种子文件</h3>
-            <span class="dropzone-msg-desc">点击或者拖动种子文件到此处</span>
-          </div>
-        </form>
-        <textarea class="form-control mt-2" id="torrent_magnets" rows="8" placeholder="magnet:?xt=urn:btih:xxx，换行添加多个磁链"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary" id="search_download_btn" title="立即开始下载">
-          下载
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+
 <!-- 根据名称查找TMDBID的对话框 -->
 <div class="modal modal-blur fade" id="search-tmdbid-modal" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
@@ -743,125 +534,18 @@
     </div>
   </div>
 </div>
-<div class="modal modal-blur fade" id="modal-search-advanced" tabindex="-1" role="dialog" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">高级搜索</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-12 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">类型</label>
-              <select class="form-select" id="advanced_search_type">
-                <option value="" selected>全部</option>
-                <option value="电影">电影</option>
-                <option value="电视剧">电视剧</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-12 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label required">名称</label>
-              <input type="text" value="" id="advanced_search_name" class="form-control"
-                     placeholder="电影/电视剧名称">
-            </div>
-          </div>
-          <div class="col-12 col-lg-2">
-            <div class="mb-3">
-              <label class="form-label">年份</label>
-              <input type="text" value="" id="advanced_search_year" class="form-control" placeholder="20xx">
-            </div>
-          </div>
-          <div class="col-12 col-lg-2">
-            <div class="mb-3">
-              <label class="form-label">季</label>
-              <select class="form-select" id="advanced_search_season">
-                <option value="" selected>全部</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">站点</label>
-              <select class="form-select" id="advanced_search_site">
-                <option value="" selected>全部</option>
-                {% for site in Indexers %}
-                  <option value="{{ site.name }}">{{ site.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="col-12 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">质量</label>
-              <select class="form-select" id="advanced_search_restype">
-                <option value="" selected>全部</option>
-                {% for Restype in RestypeDict %}
-                  <option value="{{ Restype }}">{{ Restype }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="col-12 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">分辨率</label>
-              <select class="form-select" id="advanced_search_pix">
-                <option value="" selected>全部</option>
-                {% for Pix in PixDict %}
-                  <option value="{{ Pix }}">{{ Pix }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="col-12 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label">促销</label>
-              <select class="form-select" id="advanced_sp_state">
-                <option value="* *" selected>全部</option>
-                <option value="1.0 1.0">普通</option>
-                <option value="1.0 0.0">免费</option>
-                <option value="2.0 1.0">2X</option>
-                <option value="2.0 0.0">2X免费</option>
-                <option value="1.0 0.5">50%</option>
-                <option value="2.0 0.5">2X 50%</option>
-                <option value="1.0 0.7">70%</option>
-                <option value="1.0 0.3">30%</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-12 col-lg-8">
-            <div class="mb-3">
-              <label class="form-label">过滤规则</label>
-              <select id="advanced_search_rule" class="form-control"></select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button onclick="search_media_advanced()" id="search_advanced_btn"
-                class="btn btn-primary">开始搜索
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+
 <script src="../static/js/libs/list.min.js"></script>
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/tabler.min.js"></script>
 <script src="../static/js/demo.min.js"></script>
-<script src="../static/js/echarts.min.js"></script>
+
 <script src="../static/js/numeral.min.js"></script>
-<script src="../static/js/fullcalendar.min.js"></script>
-<script src="../static/js/locales/zh-cn.js"></script>
+
+
 <script src="../static/js/jquery.filetree.js"></script>
 <script src="../static/js/dropzone-min.js"></script>
-<script src="../static/js/dom-to-image.min.js"></script>
+
 <script src="../static/js/FileSaver.min.js"></script>
 <script src="../static/js/nprogress.js"></script>
 <script src="../static/js/ace.js"></script>
@@ -2355,7 +2039,7 @@
     NProgress.start();
     $("#page_content").load(page, {}, function (response, status, xhr) {
       NProgress.done();
-      if ($("#page_content").find("title").first().text() === "登录 - NAStool") {
+      if ($("#page_content").find("title").first().text() === "登录 - Film and Television Index") {
         window.location.reload();
       } else {
         fresh_tooltip();
@@ -2430,8 +2114,7 @@
     init_season_list();
 
     // 初始化DropZone
-    torrent_dropzone = new Dropzone("#torrent_files");
-    torrent_dropzone.options.acceptedFiles = ".torrent";
+
 
     // 单选框事件
     $('input[type=radio][name=rename_type]').change(function () {
@@ -2470,6 +2153,7 @@
 <script type="text/javascript">
   {{ CustomScriptCfg.javascript|safe or "" }}
 </script>
-<script src="../static/js/liquid-glass.js?v=1.1.0" defer></script>
+<script src="../static/js/liquid-glass.js?v=1.2.0" defer></script>
+<script src="../static/js/glass-picker.js?v=1.2.0" defer></script>
 </body>
 </html>

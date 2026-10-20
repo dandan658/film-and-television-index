@@ -100,7 +100,7 @@ export class LayoutSearchbar extends CustomElement {
         <div class="d-flex flex-row flex-grow-1 align-items-center py-1">
           <!-- 导航展开按钮 -->
           <layout-navbar-button></layout-navbar-button>
-<div class="me-auto fw-bold" style="padding:8px 12px;font-size:15px">Film and Television Index <span class="badge bg-blue-lt ms-2">媒体整理</span></div>
+<div class="me-auto fw-bold" style="padding:8px 12px;font-size:15px"><span class="fti-header-brand"><img src="/static/img/film-index-logo.svg" alt="Film and Television Index" width="28" height="28"><span>Film Index</span></span></div>
           <!-- 头像 -->
           <div class="nav-item dropdown me-2">
               <a href="#" class="nav-link d-flex lh-1 text-reset ms-1 p-0" data-bs-toggle="dropdown">

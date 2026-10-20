@@ -34,7 +34,7 @@ class WebUtils:
         """
         获取当前版本号
         """
-        return "FTI v1.1.0 (NAStools v2.9.1)"
+        return "FTI v1.2.0 (NAStools v2.9.1)"
 
     @staticmethod
     def get_latest_version():

@@ -6,7 +6,7 @@ Removed acquisition features cannot be entered through old URLs or commands.
 import json
 
 PRODUCT_NAME = 'Film and Television Index'
-PROFILE_VERSION = 'v1.1.0'
+PROFILE_VERSION = 'v1.2.0'
 PERMISSIONS = ('媒体整理', '服务', '系统设置')
 REMOVED_PAGES = frozenset(('index', 'search', 'movie_rss', 'tv_rss', 'rss_history', 'rss_calendar',
     'site', 'sitelist', 'resources', 'recommend', 'ranking', 'douban_movie', 'douban_tv',
@@ -24,13 +24,22 @@ REMOVED_ACTIONS = frozenset(('search', 'download', 'download_link', 'download_to
     'get_sites', 'update_sites_cookie_ua', 'set_site_captcha_code', 'update_torrent_remove_task', 'get_torrent_remove_task',
     'delete_torrent_remove_task', 'get_remove_torrents', 'auto_remove_torrents', 'list_brushtask_torrents',
     'get_site_user_statistics', 'cookiecloud_sync', 'update_system'))
-SERVICES = frozenset(('pttransfer', 'sync', 'blacklist', 'nametest', 'ruletest', 'nettest', 'backup'))
+# PT clients and acquisition settings are unavailable even with an old configuration.
+REMOVED_PAGES = REMOVED_PAGES | frozenset(('indexer', 'downloader', 'download_setting', 'douban', 'upload', 'filterrule'))
+REMOVED_NAMESPACES = REMOVED_NAMESPACES | frozenset(('indexer', 'downloader', 'douban', 'torrent', 'siteconf', 'filterrule'))
+REMOVED_ACTIONS = REMOVED_ACTIONS | frozenset(('add_downloader', 'delete_downloader', 'get_downloader',
+    'get_indexers', 'get_download_dirs', 'get_download_setting', 'update_download_setting', 'delete_download_setting',
+    'get_douban_history', 'delete_douban_history', 'rule_test', 'add_filtergroup', 'restore_filtergroup',
+    'set_default_filtergroup', 'del_filtergroup', 'add_filterrule', 'del_filterrule', 'filterrule_detail'))
+SERVICES = frozenset(('sync', 'blacklist', 'nametest', 'nettest', 'backup'))
 
 
 def action_allowed(command, data=None):
+    if command == 'test_connection' and any(token in json.dumps(data or {}).lower() for token in ('app.downloader', 'app.indexer', 'qbittorrent', 'transmission', 'sites()', 'downloader()')):
+        return False
     if command in REMOVED_ACTIONS:
         return False
-    return command != 'sch' or (isinstance(data, dict) and data.get('item') in ('pttransfer', 'sync'))
+    return command != 'sch' or (isinstance(data, dict) and data.get('item') in ('sync',))
 
 
 def permissions(value):

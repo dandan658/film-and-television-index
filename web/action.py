@@ -269,7 +269,7 @@ class WebAction:
     @staticmethod
     def handle_message_job(msg, in_from=SearchType.OT, user_id=None, user_name=None):
         commands = {
-            '/ptt': lambda: Downloader().transfer(), '/rst': lambda: Sync().transfer_all_sync(),
+            '/rst': lambda: Sync().transfer_all_sync(),
             '/tbl': lambda: WebAction().truncate_blacklist({}), '/utf': lambda: WebAction().unidentification()}
         if msg in commands:
             ThreadHelper().start_thread(commands[msg], ())
@@ -393,7 +393,7 @@ class WebAction:
 
     @staticmethod
     def __sch(data):
-        commands = {'pttransfer': lambda: Downloader().transfer(), 'sync': lambda: Sync().transfer_all_sync()}
+        commands = {'sync': lambda: Sync().transfer_all_sync()}
         item = data.get('item')
         if item not in commands:
             return {'code': -1, 'msg': '此服务已从媒体整理版移除'}
